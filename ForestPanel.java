@@ -1,4 +1,4 @@
-package treeGrow;
+package Photosynthesis;
 
 import java.awt.Color;
 import java.util.Random;
@@ -15,6 +15,7 @@ public class ForestPanel extends JPanel implements Runnable {
 		forest=trees;
 	}
 		
+        @Override
 	public void paintComponent(Graphics g) {
 		int width = getWidth();
 		int height = getHeight();
@@ -43,6 +44,7 @@ public class ForestPanel extends JPanel implements Runnable {
 		}	
 	}
 	
+        @Override
 	public void run() {
 			
 		// reordering so that trees are rendered in a more random fashion

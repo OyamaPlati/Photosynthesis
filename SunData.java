@@ -1,4 +1,4 @@
-package treeGrow;
+package Photosynthesis;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +14,18 @@ public class SunData{
 	
 	void readData(String fileName){ 
 		try{ 
-			Scanner sc = new Scanner(new File(fileName));
+			Scanner sc = new Scanner(
+                            new File(fileName));
 			
 			// load sunmap
 			int dimx = sc.nextInt(); 
 			int dimy = sc.nextInt();
+                        // System.out.println ("Dim x:= " + dimx + " Dim y:= " + dimy);
 			sunmap = new Land(dimx,dimy);
 			for(int x = 0; x < dimx; x++)
 				for(int y = 0; y < dimy; y++) {
 					sunmap.setFull(x,y,sc.nextFloat());	
+                                        // System.out.println ("x:= " + x + " y:= " + y);
 				}
 			sunmap.resetShade();
 			

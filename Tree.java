@@ -1,4 +1,4 @@
-package treeGrow;
+package Photosynthesis;
 
 // Trees define a canopy which covers a square area of the landscape
 public class Tree{
@@ -31,19 +31,38 @@ public
 		ext = e;
 	}
 
-	// return the average sunlight for the cells covered by the tree
+        /**
+         * Average intensity of sunlight covered by tree
+         * @param land Sun exposed landscape
+         * @return The average sunlight for the cells covered by the tree 
+         */
 	float sunexposure(Land land){
-		// to do 
-		return 0.0f; // not correct
+            float sum = 0.0f;
+            int number = 0;
+            for (int i = xpos - Math.round(ext); i <= xpos + Math.round(ext); i++) {
+                for (int j = ypos - Math.round(ext); j <= ypos + Math.round(ext); j++) {
+                    sum = sum + land.getFull (i, j);
+                    number++;
+                }
+            }
+            return sum/number;
 	}
 	
-	// is the tree extent within the provided range [minr, maxr)
+        /**
+         * 
+         * @param minr 
+         * @param maxr
+         * @return is the tree extent within the provided range [minr, maxr)
+         */
 	boolean inrange(float minr, float maxr) {
 		return (ext >= minr && ext < maxr);
 	}
 	
-	// grow a tree according to its sun exposure
+        /**
+         * Grow a tree according to its sun exposure
+         * @param land Sun exposed landscape
+         */
 	void sungrow(Land land) {
-		// to do
+		ext = ext + ext*(sunexposure(land)/growfactor);
 	}
 }
