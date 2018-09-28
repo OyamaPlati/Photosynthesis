@@ -19,14 +19,12 @@ public class SunData{
             // load sunmap
             int dimx = sc.nextInt(); 
             int dimy = sc.nextInt();
-            // System.out.println ("Dim x:= " + dimx + " Dim y:= " + dimy);
             sunmap = new Land(dimx,dimy);
             for(int x = 0; x < dimx; x++)
                 for(int y = 0; y < dimy; y++) {
                     sunmap.setFull(x,y,sc.nextFloat());	
-                    // System.out.println ("x:= " + x + " y:= " + y);
             }
-            //sunmap.resetShade();
+            sunmap.resetShade();
 
             // load forest
             int numt = sc.nextInt();

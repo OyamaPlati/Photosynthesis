@@ -15,19 +15,19 @@ public
             xpos=x; ypos=y; ext=e;
     }
 
-    int getX() {
+    synchronized int getX() {
             return xpos;
     }
 
-    int getY() {
+    synchronized int getY() {
             return ypos;
     }
 
-    float getExt() {
+    synchronized float getExt() {
             return ext;
     }
 
-    void setExt(float e) {
+    synchronized void setExt(float e) {
             ext = e;
     }
 
@@ -36,25 +36,27 @@ public
      * @param land Sun exposed landscape
      * @return The average sunlight for the cells covered by the tree 
      */
-    float sunexposure(Land land){
-        float sum = 0.0f;
-        int number = 0;
-        for (int i = xpos - Math.round(ext); i <= xpos + Math.round(ext); i++) {
-            for (int j = ypos - Math.round(ext); j <= ypos + Math.round(ext); j++) {
-                sum = sum + land.getFull (i, j);
-                number++;
+    public float sunexposure(Land land){
+        synchronized (land){
+            float sum = 0.0f;
+            int number = 0;
+            for (int i = xpos - Math.round(ext); i <= xpos + Math.round(ext); i++) {
+                for (int j = ypos - Math.round(ext); j <= ypos + Math.round(ext); j++) {
+                    sum = sum + land.getFull (i, j);
+                    number++;
+                }
             }
-        }
-        return sum/number;
+            return sum/number;
+        } 
     }
 
     /**
-     * 
-     * @param minr 
-     * @param maxr
+     * Check if the extent of tree is within extent range [minr, maxr)
+     * @param minr Minimum extent of tree
+     * @param maxr Maximum extent of tree
      * @return is the tree extent within the provided range [minr, maxr)
      */
-    boolean inrange(float minr, float maxr) {
+    synchronized boolean inrange(float minr, float maxr) {
             return (ext >= minr && ext < maxr);
     }
 
@@ -62,7 +64,7 @@ public
      * Grow a tree according to its sun exposure
      * @param land Sun exposed landscape
      */
-    void sungrow(Land land) {
+    synchronized void sungrow(Land land) {
             ext = ext + ext*(sunexposure(land)/growfactor);
     }
 }

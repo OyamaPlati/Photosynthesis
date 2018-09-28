@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 import java.util.*;
 
-
 public class ForestPanel extends JPanel implements Runnable {
     Tree[] forest;	// trees to render
     List<Integer> rndorder; // permutation of tree indices so that rendering is less structured
@@ -59,7 +58,6 @@ public class ForestPanel extends JPanel implements Runnable {
             try {
                     Thread.sleep(20); 
             } catch (InterruptedException e) {
-                    e.printStackTrace();
             };
         }
     }

@@ -26,7 +26,7 @@ public class Land{
      * Obtain the x dimension 
      * @return Length of matrix
      */
-    public int getDimX() {
+    public synchronized int getDimX() {
             return dimensionX;
     }
 
@@ -34,21 +34,17 @@ public class Land{
      * Obtain the y dimension
      * @return Height of matrix
      */
-    public int getDimY() {
+    public synchronized int getDimY() {
             return dimensionY; 
     }
 
     /**
      * Reset the shaded landscape to the same as the initial sun exposed landscape
      * Needs to be done after each growth pass of the simulator
-     * @param rows
-     * @param size
      */
-    public void resetShade(int rows, int size) {
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < size; column++) {
-                    shaded [row][column] = sunExposure[row][column];
-                }
+    public synchronized void resetShade() {
+            for (int row = 0; row < dimensionX; row++) {
+                System.arraycopy(sunExposure[row], 0, shaded [row], 0, dimensionY);
             }
     }
 
@@ -58,7 +54,7 @@ public class Land{
      * @param y y position
      * @return sun exposure value
      */
-    public float getFull(int x, int y) {
+    public synchronized float getFull(int x, int y) {
             return sunExposure[x][y];
     }
 
@@ -68,7 +64,7 @@ public class Land{
      * @param y y position
      * @param val sun exposure value
      */
-    public void setFull(int x, int y, float val) {
+    public synchronized void setFull(int x, int y, float val) {
             sunExposure[x][y] = val;
     }
 
@@ -78,7 +74,7 @@ public class Land{
      * @param y y position
      * @return Shade value  
      */
-    public float getShade(int x, int y) { 
+    public synchronized float getShade(int x, int y) { 
             return shaded[x][y]; 
     }
 
@@ -88,15 +84,18 @@ public class Land{
      * @param y y position
      * @param val Shade value
      */
-    public void setShade(int x, int y, float val){
+    public synchronized void setShade(int x, int y, float val){
             shaded[x][y] = val;
     }
-
-    // reduce the 
-    void shadow(Tree tree) {
+ 
+    /**
+     * Reduce the amount of sun exposure by 10% 
+     * @param tree 
+     */
+    synchronized void shadow(Tree tree) {
         for (int row = tree.getX() - Math.round(tree.getExt()); row <= tree.getX() + Math.round(tree.getExt()); row++) {
             for (int column = tree.getY() - Math.round(tree.getExt()); column <= tree.getY() + Math.round(tree.getExt()); column++) {
-                shaded [row][column] = sunExposure[row][column]*shadefraction;
+                shaded [row][column] = shaded[row][column]*shadefraction;
             }
         }
     }
