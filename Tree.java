@@ -40,10 +40,12 @@ public
         synchronized (land){
             float sum = 0.0f;
             int number = 0;
-            for (int i = xpos - Math.round(ext); i <= xpos + Math.round(ext); i++) {
-                for (int j = ypos - Math.round(ext); j <= ypos + Math.round(ext); j++) {
-                    sum = sum + land.getFull (i, j);
-                    number++;
+            for (int i = Math.abs(xpos - Math.round(ext)); i < xpos + Math.round(ext); i++) {
+                for (int j = Math.abs(ypos - Math.round(ext)); j < ypos + Math.round(ext); j++) {
+                    if ((i < land.getDimX()) && (j < land.getDimY())) {
+                        sum = sum + land.getFull (i, j);
+                        number++;
+                    } 
                 }
             }
             return sum/number;

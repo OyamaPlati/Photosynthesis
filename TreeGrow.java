@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TreeGrow {
     static long startTime = 0;
@@ -124,7 +126,24 @@ public class TreeGrow {
         frameX = sundata.sunmap.getDimX();
         frameY = sundata.sunmap.getDimY();
         setupGUI(frameX, frameY, sundata.trees); 
-
+            
+        // create and start simulation loop here as separate thread
+        for (Tree aTree : sundata.trees) {
+            for (int range = 18; range >= 0; range-= 2) {
+                if (aTree.inrange((float)range, (float)range + 2.0f)) {                  
+                    try {
+                        Thread.sleep (20);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(TreeGrow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    sundata.sunmap.shadow(aTree);
+                    aTree.sungrow(sundata.sunmap);
+                    years++;
+                    System.out.println ("Year := " + years);
+                }
+            }
+        }
+        
         /*SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -140,8 +159,15 @@ public class TreeGrow {
                                 3. A tree then grows in proportion to the average sunlight 
                                    divided by a factor of 1000 : newextent = extent + s/ 1000.
                             
+                            try {
+                                Thread.sleep (200);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(TreeGrow.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                             sundata.sunmap.shadow(aTree);
                             aTree.sungrow(sundata.sunmap);
+                            years++;
+                            System.out.println ("Year := " + years);
                         }
                     }
                 }

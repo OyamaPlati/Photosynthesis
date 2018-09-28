@@ -7,8 +7,9 @@ public class Land{
     private int dimensionY; // Height of matrix
     private float[][] sunExposure; // Sun exposed landscape
     private float[][] shaded; // Shaded landscape
-
-    static float shadefraction = 0.1f; // Only this fraction of light is transmitted by a tree
+    
+    // Only this fraction of light is transmitted by a tree
+    static float shadefraction = 0.1f; 
 
     /**
      * Create Land object with dimension x and y
@@ -26,7 +27,7 @@ public class Land{
      * Obtain the x dimension 
      * @return Length of matrix
      */
-    public synchronized int getDimX() {
+    public int getDimX() {
             return dimensionX;
     }
 
@@ -34,7 +35,7 @@ public class Land{
      * Obtain the y dimension
      * @return Height of matrix
      */
-    public synchronized int getDimY() {
+    public int getDimY() {
             return dimensionY; 
     }
 
@@ -54,7 +55,7 @@ public class Land{
      * @param y y position
      * @return sun exposure value
      */
-    public synchronized float getFull(int x, int y) {
+    public float getFull(int x, int y) {
             return sunExposure[x][y];
     }
 
@@ -74,7 +75,7 @@ public class Land{
      * @param y y position
      * @return Shade value  
      */
-    public synchronized float getShade(int x, int y) { 
+    public float getShade(int x, int y) { 
             return shaded[x][y]; 
     }
 
@@ -93,9 +94,11 @@ public class Land{
      * @param tree 
      */
     synchronized void shadow(Tree tree) {
-        for (int row = tree.getX() - Math.round(tree.getExt()); row <= tree.getX() + Math.round(tree.getExt()); row++) {
-            for (int column = tree.getY() - Math.round(tree.getExt()); column <= tree.getY() + Math.round(tree.getExt()); column++) {
-                shaded [row][column] = shaded[row][column]*shadefraction;
+        for (int row = Math.abs(tree.getX() - Math.round(tree.getExt())); row < tree.getX() + Math.round(tree.getExt()); row++) {
+            for (int column = Math.abs(tree.getY() - Math.round(tree.getExt())); column < tree.getY() + Math.round(tree.getExt()); column++) {                
+                if ((row < dimensionX) && (column < dimensionY)) {
+                    shaded[row][column] = sunExposure[row][column]*shadefraction;
+                }               
             }
         }
     }
