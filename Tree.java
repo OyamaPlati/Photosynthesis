@@ -36,20 +36,25 @@ public
      * @param land Sun exposed landscape
      * @return The average sunlight for the cells covered by the tree 
      */
-    public float sunexposure(Land land){
-        synchronized (land){
-            float sum = 0.0f;
-            int number = 0;
-            for (int i = Math.abs(xpos - Math.round(ext)); i < xpos + Math.round(ext); i++) {
-                for (int j = Math.abs(ypos - Math.round(ext)); j < ypos + Math.round(ext); j++) {
-                    if ((i < land.getDimX()) && (j < land.getDimY())) {
+    public float sunexposure(Land land){        
+        float sum = 0;
+        int number = 0;
+        synchronized (land) {
+            int lowx = Math.abs(xpos - Math.round(ext));
+            int highx = xpos + Math.round(ext);
+            int lowy = Math.abs(ypos - Math.round(ext));
+            int highy = ypos + Math.round(ext);
+            
+            for (int i = lowx; i < highx; i++) {
+                for (int j = lowy; j < highy; j++) {
+                    if ((i < land.getDimX()) || (j < land.getDimY())) {
                         sum = sum + land.getFull (i, j);
                         number++;
                     } 
                 }
             }
-            return sum/number;
-        } 
+        }
+        return sum/number;          
     }
 
     /**

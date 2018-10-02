@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TreeGrow {
+public class TreeGrow extends JFrame implements ActionListener {
     static long startTime = 0;
     static int frameX;
     static int frameY;
@@ -20,7 +20,8 @@ public class TreeGrow {
     private static JButton end;
 
     private static int years; // generations
-
+    private static final int PAUSE = 100;
+    private static SunData sundata;
     // start timer
     private static void tick(){
         startTime = System.currentTimeMillis();
@@ -31,13 +32,13 @@ public class TreeGrow {
         return (System.currentTimeMillis() - startTime) / 1000.0f; 
     }
 
-    public static void setupGUI(int frameX,int frameY,Tree [] trees) {
+    public TreeGrow(int frameX,int frameY,Tree [] trees) {
         Dimension fsize = new Dimension(400, 400);
         // Frame init and dimensions
-        JFrame frame = new JFrame("Photosynthesis"); 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(fsize);
-        frame.setSize(400, 400);
+        setTitle ("Photosynthesis");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setPreferredSize(fsize);
+        setSize(400, 400);
 
         JPanel g = new JPanel();
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
@@ -74,17 +75,11 @@ public class TreeGrow {
 
             }
         });
-
+        
+        // Either starts the simulation or 
+        // Allows it to continue running if it was previously paused
         play = new JButton ("play");
-        play.addActionListener (new ActionListener () {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-                // Either starts the simulation or 
-                // Allows it to continue running if it was previously paused
-
-            }
-
-        });
+        play.addActionListener (this);
 
         end = new JButton ("end");
         end.addActionListener (new ActionListener () {
@@ -101,18 +96,16 @@ public class TreeGrow {
         buttons.add(end);
         g.add(buttons);
         
-        frame.setLocationRelativeTo(null);  // Center window on screen.
-        frame.add(g); //add contents to window
-        frame.setContentPane(g);  
-        frame.pack();
-        frame.setVisible(true);
+        setLocationRelativeTo(null);  // Center window on screen.
+        add(g); //add contents to window
+        setContentPane(g);  
+        pack();
         Thread fpt = new Thread(fp);
         fpt.start();
     }
 
     public static void main(String[] args) {
-        SunData sundata = new SunData();
-        
+        sundata = new SunData();
         // check that number of command line arguments is correct
         if(args.length != 1)
         {
@@ -125,53 +118,40 @@ public class TreeGrow {
 
         frameX = sundata.sunmap.getDimX();
         frameY = sundata.sunmap.getDimY();
-        setupGUI(frameX, frameY, sundata.trees); 
-            
-        // create and start simulation loop here as separate thread
-        for (Tree aTree : sundata.trees) {
-            for (int range = 18; range >= 0; range-= 2) {
-                if (aTree.inrange((float)range, (float)range + 2.0f)) {                  
-                    try {
-                        Thread.sleep (20);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(TreeGrow.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    sundata.sunmap.shadow(aTree);
-                    aTree.sungrow(sundata.sunmap);
-                    years++;
-                    System.out.println ("Year := " + years);
+        TreeGrow grow = new TreeGrow (frameX, frameY, sundata.trees); 
+        grow.setVisible (true);    
+        
+        // create and start simulation loop as separate thread 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Simulation simulate = new Simulation ();
+        simulate.start();
+    }
+    
+    private class Simulation extends Thread {
+        @Override
+        public void run () {
+            for (Tree aTree : sundata.trees) {
+                for (int range = 18; range >= 0; range-= 2) {
+                    if (aTree.inrange((float)range, (float)range + 2.0f)) {
+                        aTree.sungrow(sundata.sunmap);
+                        sundata.sunmap.shadow(aTree);                       
+                        years++;
+                        System.out.println ("Year := " + years);
+                    }                    
+                    doNothing (PAUSE);
                 }
-            }
+            }           
         }
         
-        /*SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                // create and start simulation loop here as separate thread
-                for (Tree aTree : sundata.trees) {
-                    for (int range = 18; range >= 0; range-= 2) {
-                        if (aTree.inrange((float)range, (float)range + 2.0f)) {
-                            /*  
-                                1. Calculate the average sunlight (s) in the cells that the trees cover
-                                2. Reduce the sunlight in these cells to 10% of their original value. 
-                                   Thus, trees in later layers will receive less sunlight. 
-                                   This simulates the filtering of sunlight through the canopy in a forest.
-                                3. A tree then grows in proportion to the average sunlight 
-                                   divided by a factor of 1000 : newextent = extent + s/ 1000.
-                            
-                            try {
-                                Thread.sleep (200);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(TreeGrow.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            sundata.sunmap.shadow(aTree);
-                            aTree.sungrow(sundata.sunmap);
-                            years++;
-                            System.out.println ("Year := " + years);
-                        }
-                    }
-                }
-            }
-        });*/
+        public void doNothing (int millisecond) {
+            try {
+                Thread.sleep (millisecond);
+            } catch (InterruptedException ex) {
+                Logger.getLogger (TreeGrow.class.getName ()).log (Level.SEVERE, null, ex);
+            }            
+        }
     }
 }

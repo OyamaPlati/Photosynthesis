@@ -27,7 +27,7 @@ public class Land{
      * Obtain the x dimension 
      * @return Length of matrix
      */
-    public int getDimX() {
+    public synchronized int getDimX() {
             return dimensionX;
     }
 
@@ -35,7 +35,7 @@ public class Land{
      * Obtain the y dimension
      * @return Height of matrix
      */
-    public int getDimY() {
+    public synchronized int getDimY() {
             return dimensionY; 
     }
 
@@ -55,7 +55,7 @@ public class Land{
      * @param y y position
      * @return sun exposure value
      */
-    public float getFull(int x, int y) {
+    public synchronized float getFull(int x, int y) {
             return sunExposure[x][y];
     }
 
@@ -75,7 +75,7 @@ public class Land{
      * @param y y position
      * @return Shade value  
      */
-    public float getShade(int x, int y) { 
+    public synchronized float getShade(int x, int y) { 
             return shaded[x][y]; 
     }
 
@@ -97,7 +97,7 @@ public class Land{
         for (int row = Math.abs(tree.getX() - Math.round(tree.getExt())); row < tree.getX() + Math.round(tree.getExt()); row++) {
             for (int column = Math.abs(tree.getY() - Math.round(tree.getExt())); column < tree.getY() + Math.round(tree.getExt()); column++) {                
                 if ((row < dimensionX) && (column < dimensionY)) {
-                    shaded[row][column] = sunExposure[row][column]*shadefraction;
+                    sunExposure[row][column] = sunExposure[row][column]*shadefraction;
                 }               
             }
         }

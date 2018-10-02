@@ -51,7 +51,7 @@ public class ForestPanel extends JPanel implements Runnable {
         for(int l = 0; l < forest.length; l++)
                 rndorder.add(l);
         java.util.Collections.shuffle(rndorder);
-
+        
         // render loop
         while(true) {
             repaint();
