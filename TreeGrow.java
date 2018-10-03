@@ -20,7 +20,7 @@ public class TreeGrow extends JFrame implements ActionListener {
     private static JButton end;
 
     private static int years; // generations
-    private static final int PAUSE = 100;
+    private static final int PAUSE = 20;
     private static SunData sundata;
     // start timer
     private static void tick(){
@@ -121,7 +121,7 @@ public class TreeGrow extends JFrame implements ActionListener {
         TreeGrow grow = new TreeGrow (frameX, frameY, sundata.trees); 
         grow.setVisible (true);    
         
-        // create and start simulation loop as separate thread 
+        // create and start simulation loop here as separate thread 
     }
 
     @Override
@@ -133,15 +133,15 @@ public class TreeGrow extends JFrame implements ActionListener {
     private class Simulation extends Thread {
         @Override
         public void run () {
-            for (Tree aTree : sundata.trees) {
-                for (int range = 18; range >= 0; range-= 2) {
+            for (int range = 0; range <= 18; range += 2) {
+                for (Tree aTree : sundata.trees) {
                     if (aTree.inrange((float)range, (float)range + 2.0f)) {
                         aTree.sungrow(sundata.sunmap);
                         sundata.sunmap.shadow(aTree);                       
                         years++;
                         System.out.println ("Year := " + years);
                     }                    
-                    doNothing (PAUSE);
+                    // doNothing (PAUSE);
                 }
             }           
         }

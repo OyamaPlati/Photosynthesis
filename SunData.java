@@ -21,9 +21,8 @@ public class SunData{
             int dimy = sc.nextInt();
             sunmap = new Land(dimx,dimy);
             for(int x = 0; x < dimx; x++)
-                for(int y = 0; y < dimy; y++) {
-                    float val = sc.nextFloat();
-                    sunmap.setFull(x,y,val);
+                for(int y = 0; y < dimy; y++) { 
+                    sunmap.setFull(x,y,sc.nextFloat());
             }
             sunmap.resetShade();
 
