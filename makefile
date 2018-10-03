@@ -1,4 +1,4 @@
-# Photosynthesis Project makefile
+# Photosynthesis makefile
 # Oyama PLati
 
 #
@@ -41,13 +41,7 @@ JC = javac
 # CLASSES is a macro consisting of 4 words (one for each java source file)
 #
 
-CLASSES = 
-	 \ Land.java \ 
-	   Tree.java \ 
-	   SunData.java \ 
-	   ForestPanel.java \ 
-	   TreeGrow.java 
-
+CLASSES =  \ Land.java \  Tree.java \  SunData.java \  ForestPanel.java \  TreeGrow.java 
 
 #
 # the default make target entry

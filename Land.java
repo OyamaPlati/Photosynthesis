@@ -1,5 +1,4 @@
 package Photosynthesis;
-
 public class Land{
 
     // Sun exposure data here
